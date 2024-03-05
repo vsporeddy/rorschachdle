@@ -1,5 +1,3 @@
-const blackSquare = "⬛";
-const whiteSquare = "⬜";
 const gridElement = document.getElementById('grid');
 const userInputElement = document.getElementById('user-input');
 const submitButton = document.getElementById('submit-button');
@@ -20,43 +18,20 @@ function getTodaysDateKey() {
   return `${yyyy}-${mm}-${dd}`;
 }
 
-function generateTodaysGrid() {
+async function fetchGridFromServer() {
   const dateKey = getTodaysDateKey();
+  const backendURL = "https://roffles.pythonanywhere.com/daily-grid"; 
+  const response = await fetch(`${backendURL}?date=${dateKey}`); 
 
-  let storedGrid = loadGrid(dateKey); 
-  if (storedGrid) {
-    return storedGrid;
-  } else {
-    // If no grid exists, generate a new one
-    let newGrid = generateEmojiGrid();
-    saveGrid(dateKey, newGrid); // Store the grid for today
-    return newGrid;
-  }
-}
-
-function loadGrid(dateKey) {
-  return localStorage.getItem(dateKey);
-}
-
-function saveGrid(dateKey, grid) {
-  localStorage.setItem(dateKey, grid);
-}
-
-function generateEmojiGrid() {
-  let grid = "";
-
-  for (let row = 0; row < 4; row++) {
-    for (let col = 0; col < 5; col++) {
-      grid += Math.random() < 0.5 ? blackSquare : whiteSquare; 
-    }
-    grid += "\n";
+  if (!response.ok) {
+    throw new Error(`Error fetching grid (Status: ${response.status})`);
   }
 
-  return grid;
+  const gridData = await response.text();
+  return gridData;
 }
-
 function displayGrid(grid) {
-    gridElement.innerHTML = initialGrid.replaceAll('\n', '<br>');
+    gridElement.innerHTML = grid.replaceAll('\n', '<br>');
 }
 
 function updateTitle() {
@@ -116,6 +91,9 @@ copyButton.addEventListener('click', () => {
     copyToClipboard(textToCopy); 
 });
 
-let initialGrid = generateTodaysGrid();
-displayGrid(initialGrid);
+fetchGridFromServer()
+  .then((grid) => { // We receive the grid text here
+      displayGrid(grid);
+  })
+  .catch(error => console.error('Error fetching grid:', error)); 
 updateTitle();
