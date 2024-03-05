@@ -41,7 +41,7 @@ function updateTitle() {
   const month = months[today.getMonth()];
   const year = today.getFullYear();
 
-  const dateElement = document.querySelector('h3'); // Assuming your title is an <h1> 
+  const dateElement = document.querySelector('h3'); 
   dateElement.innerText = `${month} ${date}, ${year}`;
 }
 
@@ -65,7 +65,7 @@ function createShareTextArea(text) {
 async function copyToClipboard(text) {
   try {
     await navigator.clipboard.writeText(text);
-    alert('Share text copied to clipboard!');
+    alert('Text copied to clipboard!');
   } catch (err) {
     console.error('Could not copy text: ', err);
   }
@@ -74,7 +74,7 @@ async function copyToClipboard(text) {
 submitButton.addEventListener('click', () => {
     const interpretation = userInputElement.value;
     const baseURL = "https://vsporeddy.github.io/rorschachdle/";
-    const shareText = `I saw a <b>${interpretation}</b> on today's Rorschachdle. What do you see?\n${baseURL}`; 
+    const shareText = `I saw a <b>${interpretation}</b> on today's Rorschachdle. What do you see?<br>${baseURL}`; 
 
     shareTextContainer.innerHTML = shareText;
 
@@ -87,12 +87,12 @@ closePopupButton.addEventListener('click', () => {
 });
 
 copyButton.addEventListener('click', () => {
-    const textToCopy = shareTextContainer.textContent; // Get text for copying
+    const textToCopy = shareTextContainer.textContent; 
     copyToClipboard(textToCopy); 
 });
 
 fetchGridFromServer()
-  .then((grid) => { // We receive the grid text here
+  .then((grid) => { 
       displayGrid(grid);
   })
   .catch(error => console.error('Error fetching grid:', error)); 
