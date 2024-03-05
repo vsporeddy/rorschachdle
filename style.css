@@ -1,0 +1,27 @@
+.container {
+    text-align: center;
+    margin-top: 50px;  
+}
+
+#grid {
+    font-size: 30px; 
+    margin-bottom: 20px;
+}
+
+#share-popup {
+    background-color: white;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    border: 1px solid gray;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    text-align: center; 
+}
+
+#share-popup button { 
+  display: inline-block; 
+  margin: 0 5px; 
+}
+
