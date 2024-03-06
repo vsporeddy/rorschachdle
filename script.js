@@ -5,6 +5,9 @@ const shareTextContainer = document.getElementById('share-text-container');
 const sharePopup = document.getElementById('share-popup');
 const closePopupButton = document.getElementById('close-popup');
 const copyButton = document.getElementById('copy-button');
+const backendURL = "https://roffles.pythonanywhere.com";
+const baseURL = "https://vsporeddy.github.io/rorschachdle/";
+todaysGrid = "";
 
 function getTodaysDateKey() {
   const today = new Date();
@@ -20,8 +23,7 @@ function getTodaysDateKey() {
 
 async function fetchGridFromServer() {
   const dateKey = getTodaysDateKey();
-  const backendURL = "https://roffles.pythonanywhere.com/daily-grid"; 
-  const response = await fetch(`${backendURL}?date=${dateKey}`); 
+  const response = await fetch(`${backendURL}/daily-grid?date=${dateKey}`); 
 
   if (!response.ok) {
     throw new Error(`Error fetching grid (Status: ${response.status})`);
@@ -31,7 +33,8 @@ async function fetchGridFromServer() {
   return gridData;
 }
 function displayGrid(grid) {
-    gridElement.innerHTML = grid.replaceAll('\n', '<br>');
+    todaysGrid = grid.replaceAll('\n', '\r\n<br>');
+    gridElement.innerHTML = todaysGrid;
 }
 
 function updateTitle() {
@@ -71,15 +74,61 @@ async function copyToClipboard(text) {
   }
 }
 
-submitButton.addEventListener('click', () => {
+async function fetchUniquenessFromServer(text) {
+    const response = await fetch(`${backendURL}/uniqueness?text=${text}`); 
+    if (!response.ok) {
+        throw new Error(`Error fetching uniqueness (Status: ${response.status})`);
+    }
+
+    const uniqueness = await response.text();        
+    console.log(uniqueness)
+    return uniqueness
+}
+
+async function fetchSentimentFromServer(text) {
+    const response = await fetch(`${backendURL}/sentiment?text=${text}`); 
+    if (!response.ok) {
+        throw new Error(`Error fetching sentiment (Status: ${response.status})`);
+    }
+
+    const sentiment = await response.text();        
+    console.log(sentiment)
+    return sentiment
+}
+
+async function fetchNumberFromServer() {
+    const response = await fetch(`${backendURL}/number`); 
+    if (!response.ok) {
+        throw new Error(`Error fetching number (Status: ${response.status})`);
+    }
+
+    const number = await response.text();        
+    console.log(number)
+    return number
+}
+
+submitButton.addEventListener('click', async () => {
     const interpretation = userInputElement.value;
-    const baseURL = "https://vsporeddy.github.io/rorschachdle/";
-    const shareText = `I saw a <b>${interpretation}</b> on today's Rorschachdle. What do you see?<br>${baseURL}`; 
+    shareText = "";
+    
+    try {
+        // Use await to get responses
+        const uniqueness = await fetchUniquenessFromServer(interpretation); 
+        const sentiment = await fetchSentimentFromServer(interpretation);
+        const number = await fetchNumberFromServer();
 
-    shareTextContainer.innerHTML = shareText;
+        shareText += `Rorschachdle #${number}`
+        shareText += `\r\n<br>Uniqueness: <b>${uniqueness}</b>`;
+        shareText += `\r\n<br>Psyche: <b>${sentiment}</b>`;
+        shareText += `\r\n<br>\r\n<br>${todaysGrid}`
+        shareText += `\r\n<br>What do you see?`
+        shareText += `\r\n<br>${baseURL}`; 
 
-    console.log("Submit button clicked!", sharePopup);
-    sharePopup.style.display = 'block'; // Show the popup
+        shareTextContainer.innerHTML = shareText; // Update DOM once
+        sharePopup.style.display = 'block'; 
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
 });
 
 closePopupButton.addEventListener('click', () => {
