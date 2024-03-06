@@ -118,6 +118,7 @@ submitButton.addEventListener('click', async () => {
         const number = await fetchNumberFromServer();
 
         shareText += `Rorschachdle #${number}`
+        shareText += `\r\n<br>My interpretation: ||${interpretation}||`;
         shareText += `\r\n<br>Uniqueness: <b>${uniqueness}</b>`;
         shareText += `\r\n<br>Psyche: <b>${sentiment}</b>`;
         shareText += `\r\n<br>\r\n<br>${todaysGrid}`
