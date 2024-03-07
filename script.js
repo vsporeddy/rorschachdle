@@ -114,14 +114,14 @@ submitButton.addEventListener('click', async () => {
     
     try {
         // Use await to get responses
-        const uniqueness = await fetchUniquenessFromServer(interpretation); 
-        const sentiment = await fetchSentimentFromServer(interpretation);
+        // const uniqueness = await fetchUniquenessFromServer(interpretation); 
+        // const sentiment = await fetchSentimentFromServer(interpretation);
         const number = await fetchNumberFromServer();
 
         shareText += `Rorschachdle #${number}`
         shareText += `\r\n<br>My interpretation: ||${interpretation}||`;
-        shareText += `\r\n<br>Uniqueness: <b>${uniqueness}</b>`;
-        shareText += `\r\n<br>Psyche: <b>${sentiment}</b>`;
+        // shareText += `\r\n<br>Uniqueness: <b>${uniqueness}</b>`;
+        // shareText += `\r\n<br>Psyche: <b>${sentiment}</b>`;
         shareText += `\r\n<br>\r\n<br>${todaysGrid}`
         shareText += `\r\n<br>What do you see?`
         shareText += `\r\n<br>${baseURL}`; 
