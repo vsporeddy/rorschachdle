@@ -97,7 +97,8 @@ async function fetchSentimentFromServer(text) {
 }
 
 async function fetchNumberFromServer() {
-    const response = await fetch(`${backendURL}/number`); 
+    const dateKey = getTodaysDateKey();
+    const response = await fetch(`${backendURL}/number?date=${dateKey}`); 
     if (!response.ok) {
         throw new Error(`Error fetching number (Status: ${response.status})`);
     }
