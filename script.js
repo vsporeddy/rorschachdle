@@ -75,7 +75,8 @@ async function copyToClipboard(text) {
 }
 
 async function fetchUniquenessFromServer(text) {
-    const response = await fetch(`${backendURL}/uniqueness?text=${text}`); 
+    const dateKey = getTodaysDateKey();
+    const response = await fetch(`${backendURL}/unique?date=${dateKey}&text=${text}`); 
     if (!response.ok) {
         throw new Error(`Error fetching uniqueness (Status: ${response.status})`);
     }
@@ -114,13 +115,13 @@ submitButton.addEventListener('click', async () => {
     
     try {
         // Use await to get responses
-        // const uniqueness = await fetchUniquenessFromServer(interpretation); 
+        const uniqueness = await fetchUniquenessFromServer(interpretation); 
         // const sentiment = await fetchSentimentFromServer(interpretation);
         const number = await fetchNumberFromServer();
 
         shareText += `Rorschachdle #${number}`
         shareText += `\r\n<br>My interpretation: ||${interpretation}||`;
-        // shareText += `\r\n<br>Uniqueness: <b>${uniqueness}</b>`;
+        shareText += `\r\n<br><b>${uniqueness}</b>`;
         // shareText += `\r\n<br>Psyche: <b>${sentiment}</b>`;
         shareText += `\r\n<br>\r\n<br>${todaysGrid}`
         shareText += `\r\n<br>What do you see?`
