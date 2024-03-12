@@ -1,5 +1,6 @@
 const gridElement = document.getElementById('grid');
 const userInputElement = document.getElementById('user-input');
+const alreadySubmittedElement = document.getElementById('already-submitted');
 const submitButton = document.getElementById('submit-button');
 const shareTextContainer = document.getElementById('share-text-container'); 
 const sharePopup = document.getElementById('share-popup');
@@ -8,6 +9,7 @@ const copyButton = document.getElementById('copy-button');
 const backendURL = "https://roffles.pythonanywhere.com";
 const baseURL = "https://vsporeddy.github.io/rorschachdle/";
 todaysGrid = "";
+const dateKey = getTodaysDateKey();
 
 function getTodaysDateKey() {
   const today = new Date();
@@ -32,9 +34,21 @@ async function fetchGridFromServer() {
   const gridData = await response.text();
   return gridData;
 }
+
 function displayGrid(grid) {
     todaysGrid = grid.replaceAll('\n', '\r\n<br>');
     gridElement.innerHTML = todaysGrid;
+}
+
+function displaySubmission() {
+    submitButton.style.display="inline";
+    userInputElement.style.display="inline";
+    alreadySubmittedElement.style.display="none";
+}
+
+function hideSubmission() {
+    submitButton.style.display="none";
+    userInputElement.style.display="none";
 }
 
 function updateTitle() {
@@ -82,7 +96,7 @@ async function fetchUniquenessFromServer(text) {
     }
 
     const uniqueness = await response.text();        
-    console.log(uniqueness)
+    // console.log(uniqueness)
     return uniqueness
 }
 
@@ -93,7 +107,7 @@ async function fetchAlignmentFromServer(text) {
     }
 
     const alignment = await response.text();        
-    console.log(alignment)
+    // console.log(alignment)
     return alignment
 }
 
@@ -105,7 +119,7 @@ async function fetchNumberFromServer() {
     }
 
     const number = await response.text();        
-    console.log(number)
+    // console.log(number)
     return number
 }
 
@@ -125,17 +139,40 @@ submitButton.addEventListener('click', async () => {
         shareText += `\r\n<br>Alignment : <b>${alignment}</b>`;
         shareText += `\r\n<br>\r\n<br>${todaysGrid}`
         shareText += `\r\n<br>What do you see?`
-        shareText += `\r\n<br>${baseURL}`; 
-
-        shareTextContainer.innerHTML = shareText; // Update DOM once
-        sharePopup.style.display = 'block'; 
+        shareText += `\r\n<br>${baseURL}`;
+        
+        localStorage.setItem(`submission_${getTodaysDateKey()}`, shareText);
+        displayPopup(shareText);
     } catch (error) {
         console.error('Error fetching data:', error);
     }
+
 });
+
+function displayPopup(shareText) {
+    shareTextContainer.innerHTML = shareText; // Update DOM once
+    sharePopup.style.display = 'block';   
+    hideSubmission();
+}
+
+function displayElements() {
+    updateTitle();
+    fetchGridFromServer()
+        .then((grid) => { 
+            displayGrid(grid);
+        })
+        .catch(error => console.error('Error fetching grid:', error)); 
+    if (localStorage.getItem(`submission_${dateKey}`)) {
+        const shareText = localStorage.getItem(`submission_${dateKey}`);
+        displayPopup(shareText);
+    } else {
+        displaySubmission();
+    }
+}
 
 closePopupButton.addEventListener('click', () => {
     sharePopup.style.display = 'none'; // Hide the popup
+    alreadySubmittedElement.style.display="inline"; 
 });
 
 copyButton.addEventListener('click', () => {
@@ -143,9 +180,4 @@ copyButton.addEventListener('click', () => {
     copyToClipboard(textToCopy); 
 });
 
-fetchGridFromServer()
-  .then((grid) => { 
-      displayGrid(grid);
-  })
-  .catch(error => console.error('Error fetching grid:', error)); 
-updateTitle();
+displayElements();
