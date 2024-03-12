@@ -86,15 +86,15 @@ async function fetchUniquenessFromServer(text) {
     return uniqueness
 }
 
-async function fetchSentimentFromServer(text) {
-    const response = await fetch(`${backendURL}/sentiment?text=${text}`); 
+async function fetchAlignmentFromServer(text) {
+    const response = await fetch(`${backendURL}/alignment?text=${text}`); 
     if (!response.ok) {
-        throw new Error(`Error fetching sentiment (Status: ${response.status})`);
+        throw new Error(`Error fetching alignment (Status: ${response.status})`);
     }
 
-    const sentiment = await response.text();        
-    console.log(sentiment)
-    return sentiment
+    const alignment = await response.text();        
+    console.log(alignment)
+    return alignment
 }
 
 async function fetchNumberFromServer() {
@@ -116,13 +116,13 @@ submitButton.addEventListener('click', async () => {
     try {
         // Use await to get responses
         const uniqueness = await fetchUniquenessFromServer(interpretation); 
-        // const sentiment = await fetchSentimentFromServer(interpretation);
+        const alignment = await fetchAlignmentFromServer(interpretation);
         const number = await fetchNumberFromServer();
 
         shareText += `Rorschachdle #${number}`
         shareText += `\r\n<br>My interpretation: ||${interpretation}||`;
         shareText += `\r\n<br><b>${uniqueness}</b>`;
-        // shareText += `\r\n<br>Psyche: <b>${sentiment}</b>`;
+        shareText += `\r\n<br>Alignment : <b>${alignment}</b>`;
         shareText += `\r\n<br>\r\n<br>${todaysGrid}`
         shareText += `\r\n<br>What do you see?`
         shareText += `\r\n<br>${baseURL}`; 
