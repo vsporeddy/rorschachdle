@@ -8,8 +8,59 @@ const closePopupButton = document.getElementById('close-popup');
 const copyButton = document.getElementById('copy-button');
 const backendURL = "https://roffles.pythonanywhere.com";
 const baseURL = "https://vsporeddy.github.io/rorschachdle/";
-todaysGrid = "";
 const dateKey = getTodaysDateKey();
+const gridContainer = document.getElementById('grid-container');
+gridString = "";
+
+async function fetchJsonGridFromServer() {
+  const response = await fetch(`${backendURL}/json-grid?date=${dateKey}`); 
+
+  if (!response.ok) {
+    throw new Error(`Error fetching grid (Status: ${response.status})`);
+  }
+
+  const gridJson = await response.json();
+  return gridJson;
+}
+
+function renderGridJson(gridJson) {
+for (let row = 0; row < gridJson.length; row++) {
+    for (let col = 0; col < gridJson[row].length; col++) {
+      const square = document.createElement('div');
+      square.classList.add('square'); 
+
+      if (gridJson[row][col] === 1) {
+          square.style.backgroundColor = '#F2F2F2'; 
+      }
+      if (gridJson[row][col] === 3) {
+          square.style.backgroundColor = '#C30010'; 
+      }
+      gridContainer.appendChild(square);
+    }
+  }
+}
+
+function getGridString(gridJson) {
+  const blackSquare = '⬛';
+  const whiteSquare = '⬜';
+  const redSquare = '🟥';
+
+  const gridString = gridJson.map(row => {
+    return row.map(cell => {
+        if (cell === 3) {
+            return redSquare;  
+        } else if (cell === 1) {
+            return whiteSquare; 
+        } else { 
+            return blackSquare; // Default to blackSquare
+        }
+    }).join('');
+  }).join('\r\n<br>');
+
+  return gridString;
+}
+
+
 
 function getTodaysDateKey() {
   const today = new Date();
@@ -128,6 +179,7 @@ submitButton.addEventListener('click', async () => {
     shareText = "";
     
     try {
+        hideSubmission();
         // Use await to get responses
         const uniqueness = await fetchUniquenessFromServer(interpretation); 
         const alignment = await fetchAlignmentFromServer(interpretation);
@@ -137,7 +189,7 @@ submitButton.addEventListener('click', async () => {
         shareText += `\r\n<br>My interpretation: ||${interpretation}||`;
         shareText += `\r\n<br><b>${uniqueness}</b>`;
         shareText += `\r\n<br>Alignment : <b>${alignment}</b>`;
-        shareText += `\r\n<br>\r\n<br>${todaysGrid}`
+        shareText += `\r\n<br>\r\n<br>${gridString}`
         shareText += `\r\n<br>What do you see?`
         shareText += `\r\n<br>${baseURL}`;
         
@@ -155,11 +207,27 @@ function displayPopup(shareText) {
     hideSubmission();
 }
 
+// function displayElements() {
+//     updateTitle();
+//     fetchGridFromServer()
+//         .then((grid) => { 
+//             displayGrid(grid);
+//         })
+//         .catch(error => console.error('Error fetching grid:', error)); 
+//     if (localStorage.getItem(`submission_${dateKey}`)) {
+//         const shareText = localStorage.getItem(`submission_${dateKey}`);
+//         displayPopup(shareText);
+//     } else {
+//         displaySubmission();
+//     }
+// }
+
 function displayElements() {
     updateTitle();
-    fetchGridFromServer()
-        .then((grid) => { 
-            displayGrid(grid);
+    fetchJsonGridFromServer()
+        .then((gridJson) => { 
+            renderGridJson(gridJson);
+            gridString = getGridString(gridJson);
         })
         .catch(error => console.error('Error fetching grid:', error)); 
     if (localStorage.getItem(`submission_${dateKey}`)) {
@@ -181,3 +249,4 @@ copyButton.addEventListener('click', () => {
 });
 
 displayElements();
+
