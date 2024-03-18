@@ -1,3 +1,6 @@
+div {
+  align-items: center;
+}
 .container {
     text-align: center;
     margin-top: 50px;  
@@ -25,9 +28,25 @@
   margin: 0 5px; 
 }
 
+#grid-container {
+  display: grid;
+  grid-template-columns: repeat(5, 0.01fr); /* 5 equal columns */
+  grid-template-rows: repeat(5, 1fr); /* 4 equal rows */
+  gap: 0px; /* Optional spacing between squares */
+  justify-content: center; /* Center grid horizontally */
+}
+
+.square {
+  background-color: #4D4D4D; /* Default to black */
+  width: 35px; /* Adjust square size as needed */
+  height: 35px; 
+  box-sizing: border-box; 
+}
+
 body {
 background-color: #a9927d;   
 font: normal Helvetica, sans-serif;
 text-align: center;
 letter-spacing: 0.06em;
+margin: 0
 }
