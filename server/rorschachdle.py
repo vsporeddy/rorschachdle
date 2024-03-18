@@ -8,17 +8,30 @@ from nltk.sentiment import SentimentIntensityAnalyzer
 from nltk.tokenize import word_tokenize
 from datetime import datetime
 import shelve
+import spacy
+
 
 nltk.download('vader_lexicon')
 nltk.download('stopwords')
 nltk.download('punkt')
-
+nlp = spacy.load("en_core_web_md")
 sia = SentimentIntensityAnalyzer()
 
 app = Flask(__name__)
 CORS(app)
 
 start_date = '2024-03-03'
+
+with open('lawful_words.txt', 'r') as file:
+    content = file.read()
+    lawful_list = [word.strip() for word in content.split(',')]
+
+with open('chaotic_words.txt', 'r') as file:
+    content = file.read()
+    chaotic_list = [word.strip() for word in content.split(',')]
+
+lawful_embeddings = [nlp(word) for word in lawful_list]
+chaotic_embeddings = [nlp(word) for word in chaotic_list]
 
 def create_grid():
     grid = ""
@@ -27,6 +40,46 @@ def create_grid():
             grid += random.choice(["⬛", "⬜"])
         grid += "\n"
     return grid
+
+def get_spacy_order_scores(user_text):
+    user_doc = nlp(user_text)
+
+    lawful_score = max(word.similarity(user_doc) for word in lawful_embeddings)
+    chaotic_score = max(word.similarity(user_doc) for word in chaotic_embeddings)
+
+    return lawful_score, chaotic_score
+
+
+def get_order_alignment(text):
+    # Any chaotic-lawful gap below this threshold will be considered neutral
+    threshold = 0.06
+    lawful, chaotic, neutral = "Lawful", "Chaotic", "Neutral"
+
+    spacy_lawful_score, spacy_chaotic_score = get_spacy_order_scores(text)
+    if spacy_lawful_score - spacy_chaotic_score > threshold:
+        return lawful
+    if spacy_chaotic_score - spacy_lawful_score > threshold:
+        return chaotic
+    return neutral
+
+def get_ethical_alignment(text):
+    sentiment_score = sia.polarity_scores(text)['compound']
+    good, evil, neutral = "Good", "Evil", "Neutral"
+    if sentiment_score > 0:
+        return good
+    if sentiment_score < 0:
+        return evil
+    return neutral
+
+@app.route("/alignment", methods=["GET"])
+def get_alignment():
+    text = request.args.get('text')
+    order_alignment = get_order_alignment(text)
+    ethical_alignment = get_ethical_alignment(text)
+
+    if order_alignment == ethical_alignment:
+        return "True Neutral"
+    return f"{order_alignment} {ethical_alignment}"
 
 @app.route("/unique", methods=["GET"])
 def get_uniqueness():
@@ -38,7 +91,7 @@ def get_uniqueness():
     # Filter out stop words and basic punctuation
     words = set([w.lower() for w in tokens if w.isalpha() and w not in stop_words])
     all_words = load_words(date_key)
-    unique = words and all_words
+    unique = not (words & all_words)
     store_words(date_key, words)
     return "My interpretation was unique!" if unique else "My interpretation was not unique 😔"
 
