@@ -24,20 +24,35 @@ async function fetchJsonGridFromServer() {
 }
 
 function renderGridJson(gridJson) {
-for (let row = 0; row < gridJson.length; row++) {
-    for (let col = 0; col < gridJson[row].length; col++) {
-      const square = document.createElement('div');
-      square.classList.add('square'); 
-
-      if (gridJson[row][col] === 1) {
-          square.style.backgroundColor = '#F2F2F2'; 
+    let lastRow = gridJson.length - 1; // For easily finding the last row
+    
+    for (let row = 0; row < gridJson.length; row++) {
+        let prevRowColor = null; // Stores the color of the square above
+        for (let col = 0; col < gridJson[row].length; col++) {
+          const square = document.createElement('div');
+          square.classList.add('square'); 
+    
+          if (gridJson[row][col] === 1) {
+              square.style.backgroundColor = '#F2F2F2'; 
+          }
+          if (gridJson[row][col] === 3) {
+              square.style.backgroundColor = '#C30010'; 
+          }
+    
+          square.dataset.color = gridJson[row][col]; 
+          square.dataset.row = row;
+          square.dataset.col = col; 
+    
+          square.dataset.prevRowColor = prevRowColor;
+          square.dataset.nextRowColor = (row < lastRow) ? gridJson[row + 1][col] : null;
+          square.dataset.prevColColor = (col > 0) ? gridJson[row][col - 1] : null;
+          square.dataset.nextColColor = (col < gridJson[row].length - 1) ? gridJson[row][col + 1] : null;
+    
+          gridContainer.appendChild(square);
+    
+          prevRowColor = gridJson[row][col]; //  Update for the next column
+        }
       }
-      if (gridJson[row][col] === 3) {
-          square.style.backgroundColor = '#C30010'; 
-      }
-      gridContainer.appendChild(square);
-    }
-  }
 }
 
 function getGridString(gridJson) {
@@ -190,7 +205,7 @@ submitButton.addEventListener('click', async () => {
         shareText += `\r\n<br><b>${uniqueness}</b>`;
         shareText += `\r\n<br>Alignment : <b>${alignment}</b>`;
         shareText += `\r\n<br>\r\n<br>${gridString}`
-        shareText += `\r\n<br>What do you see?`
+        shareText += `\r\n<br>\r\n<br>What do you see?`
         shareText += `\r\n<br>${baseURL}`;
         
         localStorage.setItem(`submission_${getTodaysDateKey()}`, shareText);
