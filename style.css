@@ -30,10 +30,13 @@ div {
 
 #grid-container {
   display: grid;
-  grid-template-columns: repeat(5, 0.01fr); /* 5 equal columns */
-  grid-template-rows: repeat(5, 1fr); /* 4 equal rows */
+  grid-template-columns: repeat(5, 0.01fr); 
+  grid-template-rows: repeat(5, 1fr); 
   gap: 0px; /* Optional spacing between squares */
   justify-content: center; /* Center grid horizontally */
+  width: fit-content;
+  outline: 2px solid #000; 
+  margin: 0 auto;
 }
 
 .square {
