@@ -1,228 +1,58 @@
-html, body {
-  min-height: 100%;
-  margin: 0;
-}
-
-@font-face {
-  font-family: 'angelinaregular';
-  src: url('assets/cursive-font-webfont.woff2') format('woff2'),
-        url('assets/cursive-font-webfont.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'madimi';
-  src: url('assets/madimi.woff2') format('woff2'),
-  font-weight: normal;
-  font-style: normal;
-}
-
-.custom-font {
-  font-family: 'angelinaregular', cursive;
-}
-
-body { 
-  font-family: 'madimi', sans-serif;
-  text-align: center;
-  margin: 15px;
-  background-image: url('assets/leather_1.png'); 
-  background-repeat: repeat; 
-  background-color: #f8f8f8; 
-  color: #581845; 
-  text-shadow: 1px 1px 1px rgba(0,0,0,0.1); 
-}
-
-button {
-  color: #581845; 
-}
-
-#cream-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(ellipse at var(--gradient-x) var(--gradient-y),
-                             rgba(255, 250, 240, 1) 15%,
-                             rgba(0, 0, 0, 0.6) 60%);
-  opacity: 0.5;
-  z-index: -1;
-}
-
-
-@media (max-width: 600px) {
-  #introPopup {
-    font-size: 0.9em;
-    padding: 20px;
-  }
-
-  .mode-description {
-    font-size: 0.8em;
-  }
-}
-
-
-#introPopup, #resultsPopup {
-  display: none;
-  position: fixed; 
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); 
-  background-color: #fffaf0; /* Soft cream color */
-  background-color: rgba(255, 250, 240, 1);    padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1); 
-  z-index: 100;
-  max-height: 80vh;
-  overflow-y: auto;
-}
-
-ol {
-  text-align: left;
-}
-
-.mode-description {
-  margin-bottom: 15px;
-  font-size: 0.9em;
-  color: #A9A9A9; /* Dark gray color */
-  text-shadow: none; 
-}
-
-.mode-description p {
-  margin-top: 5px;
-}
-
-#overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
-  display: none; /* Initially hidden */
-  z-index: 99;
-}
-
-.title-image-container h1 { 
-  font-family: 'angelinaregular', cursive;
-  letter-spacing: 3px; 
-}
-
-h1 {
-  font-size: 2.5em;
-  margin-bottom: 20px;
-  color: #581845; 
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.2); 
-}
-
-h2 {
-  font-weight: 380;
-}
-
-h4 {
-  font-size: 1.5em;
-  font-weight: 300;
-  margin-bottom: -15px;
-}
-
-#gameModeSelection {
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-#timedModeButton, #challengeModeButton {
-  padding: 10px 20px;
-  margin: 0 10px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  background-color: #fff; 
-  cursor: pointer;
-}
-
-input[type="text"], button {
-  padding: 10px 15px;
-  margin: 10px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  font-family: inherit;
-}
-
-#result { 
-  margin-top: 5px;
-  margin-bottom: 30px; 
-  font-size: 16px;
-  white-space: pre-wrap;
-}
-
-#result a {
-  color: #581845; 
-}
-
-#bestMatch { 
-  margin-top: 40px;
-  font-size: 16px;
-  white-space: pre-wrap;
-  height: 50px;
-  color: #666;
-}
-
-#bestMatch a {
-  color: #581845; 
-}
-
-.correct-result { 
-  color: #256137;  /* Dark forest green */
-}
-
-.incorrect-result {
-  color: #8b0000; /* Deep maroon */
-}
-
-#womenNamed, #invalidGuesses {
-  white-space: pre-wrap;
-  margin-bottom: 15px; 
-}
-
-#timer, #score {
-  font-weight: bold;
-  font-size: 1.4em;
-}
-
-#scoreDisplay, #timeDisplay  {
-  position: relative;    
-  top: -10px;
-}
-
-#attribution {
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-  font-size: 12px;
-  color: #666;
-  z-index: 200;
-}
-
-#attribution a {
-  color: #581845;
-  text-decoration: none;
-}
-
-#checkingText { 
-  font-size: 15px; 
-}
-
-#image-result {
-  display: flex; 
-  flex-direction: column; 
+div {
   align-items: center;
-  margin-bottom: 10px;
+}
+.container {
+    text-align: center;
+    margin-top: 50px;  
 }
 
-#womanImage {
-  max-width: 250px; 
-  max-height: 200px; 
-  margin-bottom: 15px; 
-  border: 5px solid #581845;
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3); 
-} 
+#grid {
+    font-size: 30px; 
+    margin-bottom: 20px;
+}
+
+#share-popup {
+    background-color: white;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    border: 1px solid gray;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    text-align: center; 
+}
+
+#share-popup button { 
+  display: inline-block; 
+  margin: 0 5px; 
+}
+
+#grid-container {
+  display: grid;
+  grid-template-columns: repeat(5, 0.01fr); 
+  grid-template-rows: repeat(5, 1fr); 
+  gap: 0px; /* Optional spacing between squares */
+  justify-content: center; /* Center grid horizontally */
+  width: fit-content;
+  outline: 2px solid #000; 
+  margin: 0 auto;
+  background-color: #F2F2F2;
+}
+
+.square {
+  background-color: #4D4D4D; /* Default to black */
+  width: 35px; /* Adjust square size as needed */
+  height: 35px; 
+  box-sizing: border-box; 
+  border-radius: 0px; /* Adjust for desired curve */
+}
+
+
+body {
+background-color: #a9927d;   
+font: normal Helvetica, sans-serif;
+text-align: center;
+letter-spacing: 0.06em;
+margin: 0
+}
